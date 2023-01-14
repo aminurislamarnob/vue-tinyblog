@@ -14,6 +14,7 @@ module.exports = {
       white: colors.white,
       gray: colors.gray,
       slate: colors.slate,
+      red: colors.red,
       'primary': {
         'green': '#42b883',
         'green-light': '#42d392',

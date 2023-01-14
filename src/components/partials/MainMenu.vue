@@ -30,7 +30,7 @@
           <div class="hidden lg:flex lg:min-w-0 lg:flex-1 lg:justify-end items-center gap-3">
             <router-link :to="{ name: 'login' }" class="inline-block rounded-lg px-3 py-1.5 text-sm font-medium leading-6 bg-primary-green text-white border border-primary-green transition hover:bg-primary-green-light hover:border-primary-green-light">Log in</router-link>
             <span class="text-gray-400">or</span>
-            <a href="#"  class="inline-block rounded-lg px-3 py-1.5 text-sm font-medium leading-6 text-gray-900 border border-gray-900/10 transition hover:bg-primary-green hover:text-white hover:border-primary-green">Register</a>
+            <router-link :to="{ name: 'register' }"  class="inline-block rounded-lg px-3 py-1.5 text-sm font-medium leading-6 text-gray-900 border border-gray-900/10 transition hover:bg-primary-green hover:text-white hover:border-primary-green">Register</router-link>
           </div>
         </nav>
       </div>
