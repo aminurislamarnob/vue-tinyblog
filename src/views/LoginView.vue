@@ -12,6 +12,7 @@
             type="text"
             v-model.trim="v$.formData.username.$model"
             :client-side-errors="v$.formData.username"
+            :server-side-errors="(serverErrors.length > 0 && serverErrors[0].username) ? serverErrors[0].username : []"
           />
         </div>
         <div>
@@ -21,6 +22,7 @@
             type="password"
             v-model.trim="v$.formData.password.$model"
             :client-side-errors="v$.formData.password"
+            :server-side-errors="(serverErrors.length > 0 && serverErrors[0].password) ? serverErrors[0].password : []"
           />
         </div>
         <div class="flex items-center justify-between">
@@ -67,7 +69,8 @@ export default {
         username: "",
         password: "",
         rememberMe: false
-      }
+      },
+      serverErrors: []
     }
   },
   validations() {
@@ -75,11 +78,11 @@ export default {
       formData: {
         username: {
           required: helpers.withMessage("Username cannot be empty", required),
-          minLength: minLength(6),
+          minLength: minLength(4),
         },
         password: {
           required: helpers.withMessage("Password cannot be empty", required),
-          minLength: minLength(6),
+          minLength: minLength(4),
         },
       },
     };
@@ -89,10 +92,40 @@ export default {
       const isFormCorrect = await this.v$.$validate();
       if (!isFormCorrect) return;
       try {
-        const response = await this.axios.post( "/jwt-auth/v1/token", this.formData );
-        console.log(response)
+        const userResponse = await this.axios.post( "/jwt-auth/v1/token", this.formData );
+        if(userResponse.status === 200){
+          this.axios.defaults.headers.common["Authorization"] = `Bearer ${userResponse.data.token}`; // add axios header auth token
+          
+          const profileResponse = await this.axios.get( "/wp/v2/users/me" );
+          if(profileResponse.status === 200){
+            localStorage.setItem("token", JSON.stringify(userResponse.data.token)); // save on localstorage
+            const userInfo = {
+              token: userResponse.data.token,
+              profile: profileResponse.data
+            }
+            this.$store.dispatch("SET_LOGGED_IN_USER", userInfo);// save user info to vuex
+            this.$router.push({name: 'home'});
+            this.$toast.success("You are successfully logged in."); // Success notification
+          }else{
+            this.$toast.error("Login failed. Please try again later."); // Error notification
+          }
+        }else{
+          this.$toast.error("Login failed. Please try again later."); // Error notification
+        }
+        this.serverErrors = [];
       } catch (error) {
-        
+        if(error.response.data.data.status === 403 && error.response.data.code === "[jwt_auth] empty_username"){
+          this.serverErrors[0] = {'username': "Username can not be empty"};
+        }else if(error.response.data.data.status === 403 && error.response.data.code === "[jwt_auth] empty_password"){
+          this.serverErrors[0] = ({'password': "Password can not be empty"});
+        }else if(error.response.data.data.status === 403 && error.response.data.code === "[jwt_auth] invalid_username"){
+          this.serverErrors[0] = ({'username': "Invalid username"});
+        }else if(error.response.data.data.status === 403 && error.response.data.code === "[jwt_auth] incorrect_password"){
+          this.serverErrors[0] = ({'password': "Incorrect password"});
+        }else{
+          this.serverErrors = [];
+          this.$toast.error("Login failed. Please try again later.");
+        }
       }
     }
   }
