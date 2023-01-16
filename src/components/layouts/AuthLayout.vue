@@ -1,10 +1,11 @@
 <template>
+    <slot name="breadcrumb"></slot>
     <div class="container mx-auto">
-        <div class="flex gap-4">
-            <aside class="w-1/4">
+        <div class="flex gap-6 py-16">
+            <aside class="w-1/5">
                 <ProfileSideBar/>
             </aside>
-            <div class="w-3/4">
+            <div class="w-4/5">
                 <slot name="content"></slot>
             </div>
         </div>

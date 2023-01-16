@@ -32,8 +32,28 @@
             <span class="text-gray-400">or</span>
             <router-link :to="{ name: 'register' }"  class="inline-block rounded-lg px-3 py-1.5 text-sm font-medium leading-6 text-gray-900 border border-gray-900/10 transition hover:bg-primary-green hover:text-white hover:border-primary-green">Register</router-link>
           </div>
-          <div v-else class="hidden lg:flex lg:min-w-0 lg:flex-1 lg:justify-end items-center gap-3">
-            <button @click.prevent="logout" class="inline-block rounded-lg px-3 py-1.5 text-sm font-medium leading-6 bg-primary-green text-white border border-primary-green transition hover:bg-primary-green-light hover:border-primary-green-light">Log Out</button>
+          <div v-else class="hidden lg:flex lg:min-w-0 lg:flex-1 lg:justify-end items-center">
+            <ul>
+              <li class="relative group">
+                <router-link to="#" class="flex items-center gap-3">
+                  <img :src="getLoggedInUser.profile.avatar_urls[48]" :alt="getLoggedInUser.profile.display_name" class="rounded-full w-8 h-8">
+                  <div class="flex items-center gap-1">
+                    <span class="capitalize">{{ getLoggedInUser.profile.display_name }}</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                    </svg>
+                  </div>
+                </router-link>
+                <ul class="py-4 shadow-lg w-44 bg-white z-10 absolute rounded-lg top-full right-0 invisible opacity-0 transition-all duration-300 group-hover:visible group-hover:opacity-100">
+                  <li class="block rounded-lg py-2 px-4 transition duration-300 text-base text-gray-900 hover:bg-gray-400/10"><router-link :to="{name: 'myprofile'}" class="block">My Profile</router-link></li>
+                  <li class="block rounded-lg py-2 px-4 transition duration-300 text-base text-gray-900 hover:bg-gray-400/10"><router-link to="#" class="block">Edit Profile</router-link></li>
+                  <li class="block rounded-lg py-2 px-4 transition duration-300 text-base text-gray-900 hover:bg-gray-400/10"><router-link to="#" class="block">My Posts</router-link></li>
+                  <li class="block rounded-lg py-2 px-4 transition duration-300 text-base text-gray-900 hover:bg-gray-400/10"><router-link to="#" class="block">Add New Posts</router-link></li>
+                  <li class="block rounded-lg py-2 px-4 transition duration-300 text-base text-gray-900 hover:bg-gray-400/10"><router-link to="#" class="block">Change Password</router-link></li>
+                  <li class="block rounded-lg py-2 px-4 transition duration-300 text-base text-gray-900 hover:bg-gray-400/10"><button @click.prevent="logout">Log Out</button></li> 
+                </ul>
+              </li>
+            </ul>
           </div>
         </nav>
       </div>
@@ -62,11 +82,8 @@
             <div class="-my-6 divide-y divide-gray-500/10">
               <div class="space-y-2 py-6">
                 <a href="#" class="-mx-3 block rounded-lg py-2 px-3 text-base leading-7 text-gray-900 hover:bg-gray-400/10">Product</a>
-
                 <a href="#" class="-mx-3 block rounded-lg py-2 px-3 text-base leading-7 text-gray-900 hover:bg-gray-400/10">Features</a>
-
                 <a href="#" class="-mx-3 block rounded-lg py-2 px-3 text-base leading-7 text-gray-900 hover:bg-gray-400/10">Marketplace</a>
-
                 <a href="#" class="-mx-3 block rounded-lg py-2 px-3 text-base leading-7 text-gray-900 hover:bg-gray-400/10">Company</a>
               </div>
               <div class="py-6">
@@ -87,7 +104,7 @@ import { mapGetters } from 'vuex'
 export default {
   computed: {
     ...mapGetters([
-      'isLoggedIn',
+      'isLoggedIn', 'getLoggedInUser'
     ])
   },
   methods: {
